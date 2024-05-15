@@ -18,7 +18,7 @@ if not os.path.exists(f'./input/data/{dataset_name}/'):
 
 # open training data
 # TODO: fileloader
-with open('./input/data/shakespeare-dataset/input.txt', encoding='utf-8', errors='ignore') as file:
+with open(f'./input/data/{dataset_name}/input.txt', encoding='utf-8', errors='ignore') as file:
     text = file.read()
 
 # tokenizer initialization
