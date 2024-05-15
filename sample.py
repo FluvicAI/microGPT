@@ -28,7 +28,7 @@ tokenizer_name = modelParams['tokenizer_name']
 
 # tokenizer initialization
 tokenizer = Tokenizer()
-with open(f'./tokenizer-dict/{tokenizer_name}.txt', 'r') as file:
+with open(f'./tokenizer-dict/{tokenizer_name}', 'r') as file:
     dict = eval(file.read())
 tokenizer.load_dict(dict)
 
