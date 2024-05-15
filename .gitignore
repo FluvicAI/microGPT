@@ -1,7 +1,6 @@
 model_params
-input/tokenizer/input-owt.txt
-input/tokenizer/input.txt
 weights
 tokenizer-dict
+input/data
 __pycache__
 test.py

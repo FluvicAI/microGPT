@@ -57,6 +57,7 @@ class Tokenizer:
         save_dict = {}
         save_dict['merges'] = self.merges
         save_dict['regex'] = self.regex
+        save_dict['vocab_size'] = self.vocab_size
 
         with open(output_path, 'w') as file:
             file.write(str(save_dict))

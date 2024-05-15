@@ -24,10 +24,13 @@ n_embed = modelParams['n_embed']
 n_heads = modelParams['n_heads']
 n_transformer_blocks = modelParams['n_transformer_blocks']
 vocab_size = modelParams['vocab_size']
+tokenizer_name = modelParams['tokenizer_name']
 
 # tokenizer initialization
 tokenizer = Tokenizer()
-tokenizer.load_dict(modelParams['tokenizer_dict'])
+with open(f'./tokenizer-dict/{tokenizer_name}.txt', 'r') as file:
+    dict = eval(file.read())
+tokenizer.load_dict(dict)
 
 model = GPTmodel(n_embed, vocab_size, block_size, n_heads, n_transformer_blocks, 0, device)
 m = model.to(device)

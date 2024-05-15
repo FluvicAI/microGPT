@@ -37,7 +37,7 @@ ts = time.time()
 torch.manual_seed(1337)
 
 # initialize tokenizer (just for vocab size)
-tokenizer_name = input('Tokenizer filename?: ')
+tokenizer_name = input('Tokenizer filename: ')
 with open(f'./tokenizer-dict/{tokenizer_name}') as file:
     dict = eval(file.read())
 
@@ -51,8 +51,8 @@ def get_batch(split):
         data = np.memmap(os.path.join(data_dir, 'val.bin'), dtype=np.uint16, mode='r')
     
     ix = torch.randint(len(data) - block_size, (batch_size,))
-    x = torch.stack([data[i:i+block_size] for i in ix])
-    y = torch.stack([data[i+1:i+block_size+1] for i in ix])
+    x = torch.stack([torch.from_numpy((data[i:i+block_size]).astype(np.int64)) for i in ix])
+    y = torch.stack([torch.from_numpy((data[i+1:i+block_size+1]).astype(np.int64)) for i in ix])
     x, y = x.to(device), y.to(device)
     return x,y
 
@@ -115,7 +115,7 @@ modelParams = {
     'n_transformer_blocks': n_transformer_blocks,
     'n_heads': n_heads,
     'vocab_size': vocab_size,
-    'tokenizer_dict': tokenizer_name
+    'tokenizer_name': tokenizer_name
 }
 
 torch.save(model.state_dict(), f'./weights/nanoGPT_weights_{model_name}.pth')
@@ -133,7 +133,6 @@ print('---------------------------------------------------------------')
 
 #TO DO FOR NEXT VERSION:
 # - tokenizer: add manual tokens + special tokens functions
-# - data loader so bigger datasets are possible (see karpathy/nanoGPT) (np.memmap)
 # - checkpoints while training
 # - graphical logs
 # - functionality to train further on existing parameters
