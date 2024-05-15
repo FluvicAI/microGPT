@@ -9,8 +9,8 @@ from model import GPTmodel
 # hyperparameters ------
 batch_size = 64
 block_size = 256 # increase??
-max_iter = 5000
-eval_interval = 500
+max_iter = 10 #5000
+eval_interval = 1 #500
 learning_rate = 3e-4
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 eval_iters = 200
@@ -85,6 +85,23 @@ def estimate_loss():
     model.train()
     return out
 
+def write_checkpoint():
+    torch.save(model.state_dict(), f'./weights/nanoGPT_weights_{model_name}_checkpoint.pth')
+    modelParams = {
+        'vocab_size': vocab_size,
+        'block_size': block_size,
+        'n_embed': n_embed,
+        'n_transformer_blocks': n_transformer_blocks,
+        'n_heads': n_heads,
+        'vocab_size': vocab_size,
+        'tokenizer_name': tokenizer_name
+    }
+    with open(f'./model_params/nanoGPT_params_{model_name}_checkpoint.txt','w') as file:
+        file.write(str(modelParams))
+
+    print('Succesfully saved checkpoint')
+    return
+
 ##Training
 # create optimiser (AdamW)
 optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
@@ -93,6 +110,11 @@ for iter in range(max_iter):
 
     if iter % eval_interval == 0:
         losses = estimate_loss()
+        try:
+            write_checkpoint()
+        except:
+            print('Error while saving checkpoint')
+
         print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}, Elapsed time: {(time.time() - ts):.1f} s")
 
     xb, yb = get_batch('train')
@@ -122,6 +144,8 @@ torch.save(model.state_dict(), f'./weights/nanoGPT_weights_{model_name}.pth')
 with open(f'./model_params/nanoGPT_params_{model_name}.txt','w') as file:
     file.write(str(modelParams))
 
+# TODO: delete checkpoint
+
 print('\n')
 print('TRAINING SUMMARY ----------------------------------------------')
 print(f"Final loss: train: {losses['train']:.4f} | val: {losses['val']:.4f}")
@@ -137,3 +161,4 @@ print('---------------------------------------------------------------')
 # - graphical logs
 # - functionality to train further on existing parameters
 # - functionality to stop training and save parameters
+# - better error handling
